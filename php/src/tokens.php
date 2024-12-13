@@ -35,7 +35,7 @@ use GuzzleHttp\Psr7\Request;
  *   Returns the response header Authorization token
  */
 function getAuthToken(string $username, string $password, $timeout = 30, $renew = true): string {
-    $responseBody = "";
+    $authToken = null;
     $dotenv = Dotenv\Dotenv::createImmutable(__DIR__, '../.env');
     $dotenv->load();
 
@@ -56,8 +56,8 @@ function getAuthToken(string $username, string $password, $timeout = 30, $renew 
     ];
 
     $data = [
-        'username' => $_ENV['EMUAPI_USER'],
-        'password' => $_ENV['EMUAPI_PASSWORD'],
+        'username' => $username,
+        'password' => $password,
         'timeout' => $timeout,
         'renew' => $renew
     ];
@@ -69,12 +69,12 @@ function getAuthToken(string $username, string $password, $timeout = 30, $renew 
                 'body' => json_encode($data),
             ]
         );
-        $responseBody = $response->getBody();
+        $authToken = $response->getHeaderLine('Authorization');
     } catch (\Exception $e) {
         $errorMsg = 'Error get auth token: ' . $e->getMessage();
         print $errorMsg;
         throw new Exception($errorMsg, 1);
     }
 
-    return $responseBody;
+    return $authToken;
 }
