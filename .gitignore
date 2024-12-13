@@ -1,0 +1,7 @@
+# Environment files
+.env
+.env.*
+!php/.env.example
+
+# PHP files
+vendor
