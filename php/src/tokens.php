@@ -17,6 +17,7 @@
  * @link https://docs.guzzlephp.org/en/stable/psr7.html
  */
 
+use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 
 /**
@@ -34,14 +35,46 @@ use GuzzleHttp\Psr7\Request;
  *   Returns the response header Authorization token
  */
 function getAuthToken(string $username, string $password, $timeout = 30, $renew = true): string {
+    $responseBody = "";
     $dotenv = Dotenv\Dotenv::createImmutable(__DIR__, '../.env');
     $dotenv->load();
 
     $url = $_ENV['EMUAPI_URL'];
     $port = $_ENV['EMUAPI_PORT'];
+    $baseUri = "{$url}:{$port}";
+
     $tenant = $_ENV['EMUAPI_TENANT'];
+    $endpoint = "/{$tenant}/tokens";
 
-    $requestUrl = "{$url}:{$port}/{$tenant}/tokens";
+    $client = new Client([
+        'base_uri' => $baseUri,
+    ]);
 
-    return $requestUrl;
+    $headers = [
+        'Content-Type' => 'application/json',
+        'Prefer' => 'representation=minimal',
+    ];
+
+    $data = [
+        'username' => $_ENV['EMUAPI_USER'],
+        'password' => $_ENV['EMUAPI_PASSWORD'],
+        'timeout' => $timeout,
+        'renew' => $renew
+    ];
+
+    try {
+        $response = $client->post($endpoint,
+            [
+                'headers' => $headers,
+                'body' => json_encode($data),
+            ]
+        );
+        $responseBody = $response->getBody();
+    } catch (\Exception $e) {
+        $errorMsg = 'Error get auth token: ' . $e->getMessage();
+        print $errorMsg;
+        throw new Exception($errorMsg, 1);
+    }
+
+    return $responseBody;
 }
