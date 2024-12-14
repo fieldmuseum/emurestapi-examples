@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * emurestapi version 3.1.2
+ *
  * This file shows how to get a JWT for authentication to the EMu REST API.
  * 
  * A key thing to note is that when you do a POST request to get the Bearer token,
@@ -8,8 +10,8 @@
  * in the response body.
  * 
  * Check out your options for the auth token here, specifically the timeout and renew options.
- * If renew is set to true, then new auth tokens will be generated with each request
- * and you can just pass the new response Authorization header from request to request.
+ * If renew is set to true, then new auth tokens will be generated (with updated expiry time)
+ * with each request and you can just pass the new Authorization header from request to request.
  * @link https://help.emu.axiell.com/emurestapi/3.1.2/04-Resources-Tokens.html#username-password
  * 
  * Guzzle is being used to perform the requests and it's pretty standard in the PHP
@@ -18,7 +20,7 @@
  */
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
+use Monolog\Logger;
 
 /**
  * Gets an authorization token from the emurestapi 
@@ -27,24 +29,38 @@ use GuzzleHttp\Psr7\Request;
  * @param string $username
  * @param string $password
  * @param int $timeout
- *   idle/elapsed time in minutes before expiry of the created token
+ *   Idle/elapsed time in minutes before expiry of the created token
  * @param boolean $renew
- *   whether new tokens should be generated with each request
+ *   Whether new tokens should be generated with each request
  * 
  * @return string
  *   Returns the response header Authorization token
  */
 function getAuthToken(string $username, string $password, $timeout = 30, $renew = true): string {
-    $authToken = null;
+
+    // dotenv and monolog can/should be handled at the application level,
+    // but we wanted to put them here for example purposes.
     $dotenv = Dotenv\Dotenv::createImmutable(__DIR__, '../.env');
     $dotenv->load();
+    $log = new Logger('emurestapi_app');
+
+    $authToken = "";
 
     $url = $_ENV['EMUAPI_URL'];
     $port = $_ENV['EMUAPI_PORT'];
-    $baseUri = "{$url}:{$port}";
+    $baseUri = $url;
 
+    if (!empty($port)) {
+        $baseUri .= ":{$port}";
+    }
+
+    // Tenant is the EMu machine name for your institution
     $tenant = $_ENV['EMUAPI_TENANT'];
-    $endpoint = "/{$tenant}/tokens";
+    if (empty($tenant)) {
+        $errorMsg = "missing tenant! check your env file/variables";
+        $log->error($errorMsg);
+        throw new Exception($errorMsg);
+    }
 
     $client = new Client([
         'base_uri' => $baseUri,
@@ -55,25 +71,27 @@ function getAuthToken(string $username, string $password, $timeout = 30, $renew 
         'Prefer' => 'representation=minimal',
     ];
 
-    $data = [
+    $bodyData = [
         'username' => $username,
         'password' => $password,
         'timeout' => $timeout,
         'renew' => $renew
     ];
 
+    $endpoint = "/{$tenant}/tokens";
+
     try {
         $response = $client->post($endpoint,
             [
                 'headers' => $headers,
-                'body' => json_encode($data),
+                'body' => json_encode($bodyData),
             ]
         );
         $authToken = $response->getHeaderLine('Authorization');
-    } catch (\Exception $e) {
-        $errorMsg = 'Error get auth token: ' . $e->getMessage();
-        print $errorMsg;
-        throw new Exception($errorMsg, 1);
+    } catch (Exception $e) {
+        $errorMsg = 'Error getting emurestapi auth token: ' . $e->getMessage();
+        $log->error($errorMsg);
+        throw new Exception($errorMsg);
     }
 
     return $authToken;

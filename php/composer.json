@@ -3,14 +3,16 @@
         "php": "^8.4",
         "guzzlehttp/guzzle": "^7.9",
         "psr/log": "^3.0",
-        "vlucas/phpdotenv": "^5.6"
+        "vlucas/phpdotenv": "^5.6",
+        "monolog/monolog": "^3.8"
     },
     "require-dev": {
         "pestphp/pest": "^3.7"
     },
     "autoload": {
         "files": [
-            "src/tokens.php"
+            "src/auth.php",
+            "src/search.php"
         ]
     },
     "autoload-dev": {
