@@ -20,7 +20,6 @@
  */
 
 use GuzzleHttp\Client;
-use Monolog\Logger;
 
 /**
  * Gets an authorization token from the emurestapi 
@@ -37,12 +36,15 @@ use Monolog\Logger;
  *   Returns the response header Authorization token
  */
 function getAuthToken(string $username, string $password, $timeout = 30, $renew = true): string {
-
-    // dotenv and monolog can/should be handled at the application level,
-    // but we wanted to put them here for example purposes.
     $dotenv = Dotenv\Dotenv::createImmutable(__DIR__, '../.env');
     $dotenv->load();
-    $log = new Logger('emurestapi_app');
+
+    if (empty($username)) {
+        throw new Exception("no username provided!");
+    }
+    if (empty($password)) {
+        throw new Exception("no password provided!");
+    }
 
     $authToken = "";
 
@@ -57,9 +59,7 @@ function getAuthToken(string $username, string $password, $timeout = 30, $renew 
     // Tenant is the EMu machine name for your institution
     $tenant = $_ENV['EMUAPI_TENANT'];
     if (empty($tenant)) {
-        $errorMsg = "missing tenant! check your env file/variables";
-        $log->error($errorMsg);
-        throw new Exception($errorMsg);
+        throw new Exception("missing tenant! check your env file/variables");
     }
 
     $client = new Client([
@@ -89,9 +89,7 @@ function getAuthToken(string $username, string $password, $timeout = 30, $renew 
         );
         $authToken = $response->getHeaderLine('Authorization');
     } catch (Exception $e) {
-        $errorMsg = 'Error getting emurestapi auth token: ' . $e->getMessage();
-        $log->error($errorMsg);
-        throw new Exception($errorMsg);
+        throw new Exception('Error getting emurestapi auth token: ' . $e->getMessage());
     }
 
     return $authToken;
