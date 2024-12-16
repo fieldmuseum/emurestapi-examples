@@ -1,10 +1,15 @@
 <?php
 
+use Dotenv\Dotenv;
+use EMuRestApi\Auth;
+
 test('test that getAuthToken() returns an Authorization bearer token', function () {
-    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__, '../../.env');
+    $dotenv = Dotenv::createImmutable(__DIR__, '../../.env');
     $dotenv->load();
 
-    $authToken = getAuthToken($_ENV['EMUAPI_USER'], $_ENV['EMUAPI_PASSWORD']);
+    $auth = new Auth();
+    $auth->setAuthToken($_ENV['EMUAPI_USER'], $_ENV['EMUAPI_PASSWORD']);
+    $authToken = $auth->getAuthToken();
 
     expect($authToken)->not->toBeEmpty();
     expect($authToken)->toContain("Bearer");
