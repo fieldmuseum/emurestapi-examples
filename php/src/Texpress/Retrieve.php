@@ -3,31 +3,24 @@
 /**
  * emurestapi version 3.1.2
  *
- * This file shows how to search an EMu module. As noted in the docs link below,
- * one of the key differences between a Search and a Retrieves is that a Search
- * lacks an {id} to retrieve in the request URL.
- * @link https://help.emu.axiell.com/emurestapi/3.1.2/04-Resources-Texpress.html#search
+ * This file shows how to get an individual record.
+ * @link https://help.emu.axiell.com/emurestapi/3.1.2/04-Resources-Texpress.html#retrieve
  *
- * emurestapi texpress search docs
- * @link https://docs.guzzlephp.org/en/stable/psr7.html
  */
 
-namespace EMuRestApi;
+namespace EMuRestApi\Texpress;
 
 use GuzzleHttp\Client;
 
-class Search
+class Retrieve
 {
-    public function searchResource(string $authToken, string $resource, string $searchOptions): array
-    {    
+    public function singleRecord(string $authToken, string $resource, string $irn, array $fieldsToReturn): array
+    {
         if (empty($authToken)) {
             throw new Exception("no auth token provided!");
         }
         if (empty($resource)) {
-            throw new Exception("no resource, to search on, provided!");
-        }
-        if (empty($searchOptions)) {
-            throw new Exception("no search options provided!");
+            throw new Exception("no resource, to retrieve from, provided!");
         }
     
         $url = $_ENV['EMUAPI_URL'];
@@ -52,10 +45,12 @@ class Search
             'Authorization' => $authToken,
             'Prefer' => 'representation=minimal',
         ];
-    
-        $encodedOptions = urlencode($searchOptions);
-    
-        $endpoint = "/{$tenant}/{$resource}?{$encodedOptions}";
+
+        $endpoint = "/{$tenant}/{$resource}/{$irn}";
+        if (!empty($fieldsToReturn)) {
+            $fields = implode(",", $fieldsToReturn);
+            $endpoint .= "?{$fields}";
+        }
     
         try {
             $response = $client->get($endpoint, [ 'headers' => $headers ]);
@@ -68,7 +63,7 @@ class Search
     
             return [ 'data' => $data, 'authToken' => $authToken ];
         } catch (Exception $e) {
-            throw new Exception('Error searching the emurestapi: ' . $e->getMessage());
+            throw new Exception('Error retrieving from the emurestapi: ' . $e->getMessage());
         }
     
         return [];

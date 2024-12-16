@@ -1,8 +1,8 @@
 <?php
 
 use Dotenv\Dotenv;
-use EMuRestApi\Auth;
-use EMuRestApi\Search;
+use EMuRestApi\Tokens\Auth;
+use EMuRestApi\Texpress\Search;
 
 test('test that searchResource() returns a response body with results', function () {
     $dotenv = Dotenv::createImmutable(__DIR__, '../../.env');

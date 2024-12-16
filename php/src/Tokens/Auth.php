@@ -19,7 +19,7 @@
  * @link https://docs.guzzlephp.org/en/stable/psr7.html
  */
 
-namespace EMuRestApi;
+namespace EMuRestApi\Tokens;
 
 use GuzzleHttp\Client;
 
