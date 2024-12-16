@@ -16,26 +16,15 @@ test('test that searchResource() returns a response body with results', function
     expect($authToken)->toContain("Bearer");
 
     // Perform the search
-    $filter = <<<TEXT
-        {
-                "OR": [
-                { "data.NamLast": { "contains": { "value": "Smith" } } },
-                { "data.NamLast": { "contains": { "value": "Jones" } } }
-            ]
-        }
-        TEXT;
-    $sort = <<<TEXT
-        [
-            { "data.NamFirst": { "order": "asc" } },
-            { "data.NamLast": { "order": "desc" } }
-        ]
-        TEXT;
+    $filter = '{"data.NamFullName":{"contains":{"value":"Museum"}}}';
 
     $searchOptions = "filter={$filter}";
 
     $search = new Search();
 
     $results = $search->searchResource($authToken, "eparties", $searchOptions);
+
+    print_r($results['data']);
 
     expect($results['authToken'])->not->toBeEmpty();
     expect($results['data'])->not->toBeEmpty();
