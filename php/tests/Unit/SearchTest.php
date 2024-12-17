@@ -27,5 +27,5 @@ test('test that searchResource() returns a response body with results', function
     print_r($results['data']);
 
     expect($results['authToken'])->not->toBeEmpty();
-    expect($results['data'])->not->toBeEmpty();
+    expect($results['data']['hits'])->toBeGreaterThan(0);
 });
