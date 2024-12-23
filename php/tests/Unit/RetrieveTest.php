@@ -17,14 +17,11 @@ test('test that singleRecord() returns a response body with results', function (
 
     $fieldsToReturn = [
         "id",
-        "data.NamFirst",
-        "data.NamLast",
+        "data.NamFullName",
     ];
 
     $get = new Retrieve();
     $result = $get->singleRecord($authToken, "eparties", "1", $fieldsToReturn);
-
-    print_r($result);
 
     expect($result['authToken'])->not->toBeEmpty();
     expect($result['data'])->not->toBeEmpty();

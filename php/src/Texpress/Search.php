@@ -53,6 +53,9 @@ class Search
             'Prefer' => 'representation=minimal',
         ];
 
+        print_r($searchOptions);
+        print("\n");
+
         $encodedOptions = urlencode($searchOptions);
 
         $endpoint = "/{$tenant}/{$resource}?{$encodedOptions}";

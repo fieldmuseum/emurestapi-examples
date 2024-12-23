@@ -49,7 +49,7 @@ class Retrieve
         $endpoint = "/{$tenant}/{$resource}/{$irn}";
         if (!empty($fieldsToReturn)) {
             $fields = implode(",", $fieldsToReturn);
-            $endpoint .= "?{$fields}";
+            $endpoint .= "?select={$fields}";
         }
     
         try {
