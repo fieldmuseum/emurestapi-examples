@@ -3,16 +3,10 @@
 /**
  * emurestapi version 3.1.3
  *
- * As of Jan 2025
- * PLEASE NOTE!! The documentation for Search is unclear or wrong. You cannot do a GET
- * request. You must perform a POST request overidden to a GET request, with a x-www-form-encoded body.
- * This function performs a X-HTTP-Method-Override as a GET request.
- * See below for implementation details.
- *
- * This file shows how to search an EMu module. As noted in the docs link below,
- * one of the key differences between a Search and a Retrieves is that a Search
- * lacks an {id} to retrieve in the request URL.
+ * PLEASE NOTE: the documentation for Search is unclear. This request must be a POST
+ * with the method overridden to a GET, not a GET. See the Override doc below.
  * @link https://help.emu.axiell.com/emurestapi/3.1.3/04-Resources-Texpress.html#search
+ * @link https://help.emu.axiell.com/emurestapi/3.1.3/05-Appendices-Override.html
  *
  * Query Syntax can be found in the appendices
  * @link https://help.emu.axiell.com/emurestapi/3.1.3/05-Appendices-Query.html
