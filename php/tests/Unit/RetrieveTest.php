@@ -25,7 +25,7 @@ test('test that singleRecord() returns a response body with results', function (
     ];
 
     $get = new Retrieve();
-    $result = $get->singleRecord($authToken, "ecatalogue", "1", $fieldsToReturn);
+    $result = $get->record($authToken, "ecatalogue", "1", $fieldsToReturn);
 
     expect($result['authToken'])->not->toBeEmpty();
     expect($result['data'])->not->toBeEmpty();

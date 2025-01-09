@@ -18,7 +18,7 @@ use GuzzleHttp\Client;
 
 class Search
 {
-    public function searchResource(string $authToken, string $resource, array $formData): array
+    public function resource(string $authToken, string $resource, array $formData): array
     {
         if (empty($authToken)) {
             throw new Exception("no auth token provided!");

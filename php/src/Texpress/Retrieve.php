@@ -14,7 +14,7 @@ use GuzzleHttp\Client;
 
 class Retrieve
 {
-    public function singleRecord(string $authToken, string $resource, string $irn, array $fieldsToReturn): array
+    public function record(string $authToken, string $resource, string $irn, array $fieldsToReturn): array
     {
         if (empty($authToken)) {
             throw new Exception("no auth token provided!");

@@ -24,7 +24,7 @@ test('test that searchResource() returns a response body with results', function
 
     $search = new Search();
 
-    $results = $search->searchResource($authToken, "eparties", $formData);
+    $results = $search->resource($authToken, "eparties", $formData);
     expect($results['authToken'])->not->toBeEmpty();
     expect($results['data']['hits'])->toBeGreaterThan(0);
 });
