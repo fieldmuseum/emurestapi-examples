@@ -3,7 +3,7 @@
 use Dotenv\Dotenv;
 use EMuRestApi\Tokens\Auth;
 
-test('test that getAuthToken() returns an Authorization bearer token', function () {
+test('test that token() returns an Authorization bearer token', function () {
     $dotenv = Dotenv::createImmutable(__DIR__, '../../.env');
     $dotenv->load();
 
