@@ -29,6 +29,4 @@ test('test that singleRecord() returns a response body with results', function (
 
     expect($result['authToken'])->not->toBeEmpty();
     expect($result['data'])->not->toBeEmpty();
-
-    print_r($result['data']);
 });
