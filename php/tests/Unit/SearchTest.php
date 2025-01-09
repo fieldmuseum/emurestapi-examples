@@ -16,16 +16,15 @@ test('test that searchResource() returns a response body with results', function
     expect($authToken)->toContain("Bearer");
 
     // Perform the search
-    $filter = '{"data.NamFullName":{"contains":{"value":"Museum"}}}';
-
-    $searchOptions = "filter={$filter}";
+    $formData = [
+        'filter' => '{"AND":[{"data.NamLast":{"exact":{"value": "Smith"}}}]}',
+        'sort' => '[{"data.NamFirst":{"order":"asc"}}]',
+        'limit' => 5,
+    ];
 
     $search = new Search();
 
-    $results = $search->searchResource($authToken, "eparties", $searchOptions);
-
-    print_r($results['data']);
-
+    $results = $search->searchResource($authToken, "eparties", $formData);
     expect($results['authToken'])->not->toBeEmpty();
     expect($results['data']['hits'])->toBeGreaterThan(0);
 });
