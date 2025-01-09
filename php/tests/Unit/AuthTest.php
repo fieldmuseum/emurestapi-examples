@@ -8,8 +8,8 @@ test('test that getAuthToken() returns an Authorization bearer token', function 
     $dotenv->load();
 
     $auth = new Auth();
-    $auth->setAuthToken($_ENV['EMUAPI_USER'], $_ENV['EMUAPI_PASSWORD']);
-    $authToken = $auth->getAuthToken();
+    $auth->setToken($_ENV['EMUAPI_USER'], $_ENV['EMUAPI_PASSWORD']);
+    $authToken = $auth->token();
 
     expect($authToken)->not->toBeEmpty();
     expect($authToken)->toContain("Bearer");

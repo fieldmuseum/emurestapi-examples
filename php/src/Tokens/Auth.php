@@ -37,7 +37,7 @@ class Auth
      * 
      * @return string
      */
-    public function getAuthToken()
+    public function token()
     {
         return $this->authToken;
     }
@@ -56,7 +56,7 @@ class Auth
      * @return string
      *   Returns the response header Authorization token
      */
-    public function setAuthToken(string $username, string $password, $timeout = 30, $renew = true)
+    public function setToken(string $username, string $password, $timeout = 30, $renew = true)
     {
         if (empty($username)) {
             throw new Exception("no username provided!");
