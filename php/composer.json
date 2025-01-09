@@ -1,4 +1,6 @@
 {
+    "name": "emurestapi/examples",
+    "description": "examples for Axiell's EMu REST API, in PHP",
     "require": {
         "php": "^8.4",
         "guzzlehttp/guzzle": "^7.9",
@@ -9,9 +11,7 @@
         "pestphp/pest": "^3.7"
     },
     "autoload": {
-        "files": [
-            "src/tokens.php"
-        ]
+        "psr-4": {"EMuRestApi\\": "src/"}
     },
     "autoload-dev": {
         "psr-4": {

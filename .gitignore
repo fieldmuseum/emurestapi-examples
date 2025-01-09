@@ -5,3 +5,6 @@
 
 # PHP files
 vendor
+
+# Mac stuff
+.DS_Store
