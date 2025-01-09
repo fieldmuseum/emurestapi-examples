@@ -1,7 +1,7 @@
 <?php
 
 /**
- * emurestapi version 3.1.2
+ * emurestapi version 3.1.3
  *
  * This file shows how to get a JWT for authentication to the EMu REST API.
  * 
@@ -12,7 +12,7 @@
  * Check out your options for the auth token here, specifically the timeout and renew options.
  * If renew is set to true, then new auth tokens will be generated (with updated expiry time)
  * with each request and you can just pass the new Authorization header from request to request.
- * @link https://help.emu.axiell.com/emurestapi/3.1.2/04-Resources-Tokens.html#username-password
+ * @link https://help.emu.axiell.com/emurestapi/3.1.3/04-Resources-Tokens.html#username-password
  * 
  * Guzzle is being used to perform the requests and it's pretty standard in the PHP
  * community so we'll use that for our example.

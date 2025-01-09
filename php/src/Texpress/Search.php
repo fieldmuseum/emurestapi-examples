@@ -1,15 +1,15 @@
 <?php
 
 /**
- * emurestapi version 3.1.2
+ * emurestapi version 3.1.3
  *
  * This file shows how to search an EMu module. As noted in the docs link below,
  * one of the key differences between a Search and a Retrieves is that a Search
  * lacks an {id} to retrieve in the request URL.
- * @link https://help.emu.axiell.com/emurestapi/3.1.2/04-Resources-Texpress.html#search
+ * @link https://help.emu.axiell.com/emurestapi/3.1.3/04-Resources-Texpress.html#search
  *
  * Query Syntax can be found in the appendices
- * @link https://help.emu.axiell.com/emurestapi/3.1.2/05-Appendices-Query.html
+ * @link https://help.emu.axiell.com/emurestapi/3.1.3/05-Appendices-Query.html
  */
 
 namespace EMuRestApi\Texpress;

@@ -17,12 +17,18 @@ test('test that singleRecord() returns a response body with results', function (
 
     $fieldsToReturn = [
         "id",
-        "data.NamFullName",
+        "data.SummaryData",
+        "data.CatDepartment",
+        "data.CatCatalogSubset",
+        "data.DarGenus",
+        "data.DarSpecies",
     ];
 
     $get = new Retrieve();
-    $result = $get->singleRecord($authToken, "eparties", "1", $fieldsToReturn);
+    $result = $get->singleRecord($authToken, "ecatalogue", "1", $fieldsToReturn);
 
     expect($result['authToken'])->not->toBeEmpty();
     expect($result['data'])->not->toBeEmpty();
+
+    print_r($result['data']);
 });

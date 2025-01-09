@@ -1,10 +1,10 @@
 <?php
 
 /**
- * emurestapi version 3.1.2
+ * emurestapi version 3.1.3
  *
  * This file shows how to get an individual record.
- * @link https://help.emu.axiell.com/emurestapi/3.1.2/04-Resources-Texpress.html#retrieve
+ * @link https://help.emu.axiell.com/emurestapi/3.1.3/04-Resources-Texpress.html#retrieve
  *
  */
 
