@@ -4,7 +4,7 @@ use Dotenv\Dotenv;
 use EMuRestApi\Tokens\Auth;
 use EMuRestApi\Texpress\Retrieve;
 
-test('test that singleRecord() returns a response body with results', function () {
+test('test that record() returns a response body with results', function () {
     $dotenv = Dotenv::createImmutable(__DIR__, '../../.env');
     $dotenv->load();
 
