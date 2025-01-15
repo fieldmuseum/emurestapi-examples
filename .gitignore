@@ -2,6 +2,7 @@
 .env
 .env.*
 !php/.env.example
+!node/.env.example
 
 # PHP files
 vendor
