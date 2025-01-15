@@ -2,9 +2,13 @@
 .env
 .env.*
 !php/.env.example
+!node/.env.example
 
 # PHP files
 vendor
 
 # Mac stuff
 .DS_Store
+
+# JS/TS
+node_modules
