@@ -1,5 +1,4 @@
 import "dotenv/config"
-import { getAuthToken } from "../tokens/auth"
 import type { EMuRecord } from "./types"
 
 export async function getRecord(authToken: string, resource: string, irn: string, returnFields: string[]): Promise<EMuRecord> {
