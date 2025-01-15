@@ -8,3 +8,6 @@ vendor
 
 # Mac stuff
 .DS_Store
+
+# JS/TS
+node_modules
