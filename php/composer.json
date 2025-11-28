@@ -2,7 +2,7 @@
     "name": "emurestapi/examples",
     "description": "examples for Axiell's EMu REST API, in PHP",
     "require": {
-        "php": "^8.4",
+        "php": ">=8.2",
         "guzzlehttp/guzzle": "^7.9",
         "psr/log": "^3.0",
         "vlucas/phpdotenv": "^5.6"
