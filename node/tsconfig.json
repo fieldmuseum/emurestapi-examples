@@ -8,11 +8,11 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "baseUrl": "./",
     "paths": {
-      "@utils/*": ["src/utils/*"],
-      "@tokens/*": ["src/tokens/*"]
-    }
+      "@utils/*": ["./src/utils/*"],
+      "@tokens/*": ["./src/tokens/*"]
+    },
+    "types": ["node", "jest"]
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]
