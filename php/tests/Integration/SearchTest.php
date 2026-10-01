@@ -1,0 +1,34 @@
+<?php
+
+/**
+ * Hits a real EMu REST API. Skipped unless php/.env holds working credentials.
+ *
+ * Run just these with: ./vendor/bin/pest --group=integration
+ */
+
+use EMuRestApi\Texpress\Search;
+use EMuRestApi\Tokens\Auth;
+
+beforeEach(fn () => resetEmuApi());
+
+test('test that resource() returns a response body with results', function () {
+    // First, get the auth token
+    $auth = new Auth();
+    $auth->setToken($_ENV['EMUAPI_USER'], $_ENV['EMUAPI_PASSWORD']);
+    $authToken = $auth->token();
+    expect($authToken)->not->toBeEmpty();
+    expect($authToken)->toContain('Bearer');
+
+    // Perform the search
+    $formData = [
+        'filter' => '{"AND":[{"data.NamLast":{"exact":{"value": "Smith"}}}]}',
+        'sort' => '[{"data.NamFirst":{"order":"asc"}}]',
+        'limit' => 5,
+    ];
+
+    $search = new Search();
+
+    $results = $search->resource($authToken, 'eparties', $formData);
+    expect($results['authToken'])->not->toBeEmpty();
+    expect($results['data']['hits'])->toBeGreaterThan(0);
+})->group('integration')->skip(fn () => missingLiveCredentials(), NO_LIVE_CREDENTIALS);

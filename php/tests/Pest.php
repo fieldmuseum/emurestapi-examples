@@ -1,54 +1,85 @@
 <?php
 
 use Dotenv\Dotenv;
+use EMuRestApi\Config;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\Middleware;
 
 /*
 |--------------------------------------------------------------------------
-| Before all
+| Bootstrap
 |--------------------------------------------------------------------------
 |
+| Load php/.env if it exists. Only the integration tests need it; the unit
+| tests mock the HTTP layer and set their own environment values, so they run
+| on a fresh clone with no credentials at all.
+|
 */
+
+if (file_exists(__DIR__ . '/../.env')) {
+    Dotenv::createImmutable(__DIR__ . '/..')->load();
+}
 
 /*
 |--------------------------------------------------------------------------
-| Test Case
+| Helpers
 |--------------------------------------------------------------------------
-|
-| The closure you provide to your test functions is always bound to a specific PHPUnit test
-| case class. By default, that class is "PHPUnit\Framework\TestCase". Of course, you may
-| need to change it using the "pest()" function to bind a different classes or traits.
-|
 */
 
-// pest()->extend(Tests\TestCase::class)->in('Feature');
+/**
+ * Settings the examples read, pointing at a host that does not exist. Used by
+ * the unit tests, which never send a real request.
+ */
+function fakeEmuEnv(): void
+{
+    $_ENV['EMUAPI_URL'] = 'http://emu.example.test';
+    $_ENV['EMUAPI_PORT'] = '8080';
+    $_ENV['EMUAPI_TENANT'] = 'mymuseum';
+}
 
-/*
-|--------------------------------------------------------------------------
-| Expectations
-|--------------------------------------------------------------------------
-|
-| When you're writing tests, you often need to check that values meet certain conditions. The
-| "expect()" function gives you access to a set of "expectations" methods that you can use
-| to assert different things. Of course, you may extend the Expectation API at any time.
-|
-*/
+/**
+ * Points the examples at canned responses instead of a live EMu.
+ *
+ * @param \GuzzleHttp\Psr7\Response[] $responses Returned in order, one per request
+ *
+ * @return ArrayObject A log of the requests the example sent, so a test can
+ *   assert on the method, URL, headers and body that were actually used.
+ */
+function mockEmuApi(array $responses): ArrayObject
+{
+    fakeEmuEnv();
 
-expect()->extend('toBeOne', function () {
-    return $this->toBe(1);
-});
+    $sent = new ArrayObject();
+    $stack = HandlerStack::create(new MockHandler($responses));
+    $stack->push(Middleware::history($sent));
+    Config::useTestHandler($stack);
 
-/*
-|--------------------------------------------------------------------------
-| Functions
-|--------------------------------------------------------------------------
-|
-| While Pest is very powerful out-of-the-box, you may have some testing code specific to your
-| project that you don't want to repeat in every file. Here you can also expose helpers as
-| global functions to help you to reduce the number of lines of code in your test files.
-|
-*/
+    return $sent;
+}
 
-// function something()
-// {
-//     // ..
-// }
+/**
+ * Restores the real HTTP layer. Call this from afterEach() in a unit test file.
+ */
+function resetEmuApi(): void
+{
+    Config::useTestHandler(null);
+}
+
+/**
+ * Whether live credentials are configured. The integration tests skip
+ * themselves when they are not; see php/.env.example.
+ */
+function missingLiveCredentials(): bool
+{
+    foreach (['EMUAPI_URL', 'EMUAPI_TENANT', 'EMUAPI_USER', 'EMUAPI_PASSWORD'] as $name) {
+        if (empty($_ENV[$name])) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/** The message shown when an integration test is skipped. */
+const NO_LIVE_CREDENTIALS = 'live EMu credentials not configured; copy .env.example to .env to run this';

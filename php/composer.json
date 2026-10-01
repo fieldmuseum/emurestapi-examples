@@ -1,13 +1,15 @@
 {
     "name": "emurestapi/examples",
-    "description": "examples for Axiell's EMu REST API, in PHP",
+    "description": "Examples for Axiell's EMu REST API, in PHP",
+    "license": "MIT",
+    "keywords": ["emu", "axiell", "rest-api", "museum", "collections"],
     "require": {
         "php": ">=8.2",
         "guzzlehttp/guzzle": "^7.9",
-        "psr/log": "^3.0",
         "vlucas/phpdotenv": "^5.6"
     },
     "require-dev": {
+        "laravel/pint": "^1.18",
         "pestphp/pest": "^3.7"
     },
     "autoload": {
@@ -18,8 +20,16 @@
             "Tests\\": "tests/"
         }
     },
+    "scripts": {
+        "test": "pest --exclude-group=integration",
+        "test:integration": "pest --group=integration",
+        "test:all": "pest",
+        "lint": "pint --test",
+        "lint:fix": "pint"
+    },
     "config": {
         "vendor-dir": "vendor",
+        "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true
         }

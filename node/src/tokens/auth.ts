@@ -1,31 +1,58 @@
-import "dotenv/config"
+/**
+ * This file shows how to get a JWT for authentication to the EMu REST API.
+ *
+ * A key thing to note is that when you do a POST request to get the Bearer token,
+ * you'll need to get the token from the "Authorization" response header. Don't look
+ * in the response body.
+ *
+ * Check out your options for the auth token here, specifically the timeout and renew
+ * options. If renew is set to true, then new auth tokens will be generated (with
+ * updated expiry time) with each request and you can just pass the new Authorization
+ * header from request to request. See retrieve.ts and search.ts for how that is done.
+ * @link https://help.emu.axiell.com/emurestapi/latest/04-Resources-Tokens.html#username-password
+ */
 
-// Gets an auth token from your tenant
-export async function getAuthToken(user: string, password: string): Promise<string> {
-  const url = `${process.env.EMUAPI_URL}:${process.env.EMUAPI_PORT}/${process.env.EMUAPI_TENANT}/tokens`
+import { REQUEST_TIMEOUT_MS, httpError, tenantUrl } from "../config"
 
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify({ username: user, password: password }),
-    })
-    if (!response.ok) {
-      throw new Error(`error getting auth token: ${response.status}; ${response.text()}`)
-    }
+/**
+ * Gets an auth token from your tenant.
+ *
+ * @param user EMu username
+ * @param password EMu password
+ * @param timeout Idle/elapsed time in minutes before expiry of the created token
+ * @param renew Whether new tokens should be generated with each request
+ *
+ * @returns The value of the Authorization response header, e.g. "Bearer eyJ..."
+ */
+export async function getAuthToken(
+  user: string,
+  password: string,
+  timeout: number = 30,
+  renew: boolean = true,
+): Promise<string> {
+  if (!user) throw new Error("no username provided!")
+  if (!password) throw new Error("no password provided!")
 
-    const authToken = response.headers.get("Authorization")
-    if (!authToken) throw new Error("authToken not present in headers!")
-    if (!authToken.includes("Bearer")) throw new Error("Bearer not including in Auth header!")
+  const response = await fetch(tenantUrl("tokens"), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Prefer: "representation=minimal",
+    },
+    body: JSON.stringify({ username: user, password: password, timeout: timeout, renew: renew }),
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+  })
 
-    return authToken
-
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error(error.message)
-    } else {
-      console.error("An unknown error occurred.")
-    }
+  if (!response.ok) {
+    throw await httpError("error getting auth token", response)
   }
 
-  return ""
+  // The token is in the response header, not the body.
+  const authToken = response.headers.get("Authorization")
+  if (!authToken) throw new Error("Authorization header missing from the token response!")
+  if (!authToken.includes("Bearer")) {
+    throw new Error(`expected a Bearer token in the Authorization header, got: ${authToken}`)
+  }
+
+  return authToken
 }

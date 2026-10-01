@@ -12,3 +12,4 @@ vendor
 
 # JS/TS
 node_modules
+dist
