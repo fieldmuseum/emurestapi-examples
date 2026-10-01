@@ -84,7 +84,9 @@ npm test
 | Command | What it does |
 | --- | --- |
 | `npm test` | Runs the mocked tests. No credentials needed. |
+| `npm run test:one -- <path> [-t <name>]` | Runs one file, or one test, with each test name printed. |
 | `npm run test:integration` | Runs the tests that hit a real EMu. |
+| `npm run test:one:integration -- <path> [-t <name>]` | Same as `test:one`, for the integration tests. |
 | `npm run example` | Runs [`src/index.ts`](node/src/index.ts) end to end against your tenant. |
 | `npm run typecheck` | Typechecks without emitting. |
 | `npm run lint` | Lints with ESLint. |
@@ -103,6 +105,33 @@ The tests are the usage examples, so they are written to be read:
   skip themselves unless `.env` holds working credentials, so they are safe to
   leave in place. `EMUAPI_TEST_IRN` points the retrieve test at a record that
   exists in your tenant.
+
+### Running one test
+
+In `node`, `test:one` takes a file and an optional test name, and prints each
+test name as it runs:
+
+```bash
+npm run test:one -- src/tokens/auth.test.ts                          # one file
+npm run test:one -- src/tokens/auth.test.ts -t "omits the port"      # one test
+```
+
+The path is a regex matched against the file path rather than a literal path, so
+`npm run test:one -- tokens` runs everything under that directory. `-t` matches
+on a substring of the test name; the other tests in the file are reported as
+skipped. Note that `test:one` uses the default config, so it will not find an
+integration test; those have their own script:
+
+```bash
+npm run test:one:integration -- src/tokens/auth.integration.test.ts
+```
+
+In `php`, Pest takes a path, and `--filter` narrows to one test:
+
+```bash
+./vendor/bin/pest tests/Unit/AuthTest.php
+./vendor/bin/pest tests/Unit/AuthTest.php --filter="rejects missing credentials"
+```
 
 ## License
 
